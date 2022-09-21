@@ -1,19 +1,28 @@
 import React, { useState } from "react";
 import Layout from "../components/Layout";
-import { supabase } from "../supabase";
+import { useAuth } from "../auth";
 
 const SignIn = () => {
+  const auth = useAuth();
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-    const { error } = await supabase.auth.signIn({ email });
-    if (error) {
-      console.log(error);
+    // const { error } = await supabase.auth.signIn({ email });
+    // if (error) {
+    //   console.log(error);
+    // } else {
+    //   setMessage("Magic link has been sent.");
+    // }
+    const signIn = await auth.login(email);
+    if (signIn.error) {
+      setMessage(signIn.error.message);
     } else {
-      setMessage("Magic link has been sent.");
+      setMessage("Signing in link has been sent successfully.");
     }
+
+    setEmail("");
   };
 
   return (
